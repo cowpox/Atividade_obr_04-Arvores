@@ -17,7 +17,10 @@
         valor == raiz->chave, retorna raiz
         valor < raiz->chave, busca sub-árvore esquerda
         valor > raiz->chave, busca sub-árvore direita
-    teste: erro (não localizou o 5)
+    teste:
+        1 - erro (não localizou o 5)
+        2 - funcionando (OK)
+
 
 03) Função inserir:
     retorna: ponteiro de nó
@@ -28,7 +31,9 @@
             valor > raiz->chave, insira na subárvore direita
             valor == raiz->chave, incrementa contador e não cria nono nó
         retorna a nova raiz (importante para recursão)
-    teste: ainda sem conseguir avaliar
+    teste:
+        1 - ainda sem conseguir avaliar
+        2 - funcionando (OK)
 
 04) Revisar a função inicializar
     recebe: ponteiro de ponteiro
@@ -47,6 +52,7 @@
 
 06) Modificar a inserção de valores no main (atribuir a um ponteiro)
 falta fazer a revisão!!!
+Revisado => ok
 
 07) Função removerUmaOcorrencia
     recebe: ponteiro para raiz e o valor a ser removido
@@ -57,7 +63,9 @@ falta fazer a revisão!!!
         se encontrado e contador maior que 1 => só decrementa o contador em 1
         se encontrado e contador == 1 => faz a remoção tradicional
     obs: não há necessidade de usar a função buscar, para não percorrer a árvore 2 x
-    teste: ainda não realizado
+    teste:
+        1 - ainda não realizado
+        2 - funcionando (OK)
 
 08) Implementar a função exibirInOrder (para poder testar as funções de remoção)
     recebe: ponteiro para a raiz
@@ -70,3 +78,15 @@ falta fazer a revisão!!!
     teste: exibiu em ordem crescente. Funcionando (OK)
 
 09) Realizar testes com as funções já implementadas
+    realizados os testes. Todas as funções implementadas até aqui estão funcionando
+
+10) Função removerTodasOcorrencias
+    recebe: ponteiro para raiz e o valor a ser removido
+    retorna: ponteiro da raiz (que pode ser diferente)
+    lógica: remove completamente o nó, independente do contador
+        busca o nó que contenha o valor (durante o percurso da excludência)
+        se não encontrado, não faz nada (retorna a raiz)
+        se encontrado => faz a remoção tradicional
+    teste: funcionando (OK)
+
+

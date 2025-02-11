@@ -152,11 +152,38 @@ PONT removerUmaOcorrencia(PONT raiz, int valor) {
 //------------------------------------------------------------------------------
 // 6) Remover TODAS ocorrências
 PONT removerTodasOcorrencias(PONT raiz, int valor) {
-    // COMPLETAR
-    // 1) Buscar nó do valor
-    //    - se não achar, não faz nada
-    // 2) se achar => remove nó da BST (casos 0,1,2 filhos)
-    return raiz; // provisório
+    if (raiz == NULL)
+        return NULL;  // Se a árvore está vazia ou o valor não foi encontrado
+    
+        // 1) Buscar nó do valor (enquanto percorre para exluir):
+    if (valor < raiz->chave) {
+        raiz->esq = removerTodasOcorrencias(raiz->esq, valor);
+    } else if (valor > raiz->chave) {
+        raiz->dir = removerTodasOcorrencias(raiz->dir, valor);
+    } else {
+        // Encontrou o nó - agora vamos removê-lo completamente
+        if (raiz->esq == NULL) {
+            PONT temp = raiz->dir;
+            free(raiz);
+            return temp;
+        } else if (raiz->dir == NULL) {
+            PONT temp = raiz->esq;
+            free(raiz);
+            return temp;
+        } else {
+            // Nó com dois filhos: encontrar o sucessor in-order (menor da subárvore direita)
+            PONT temp = raiz->dir;
+            while (temp->esq != NULL) temp = temp->esq;
+
+            // Copia os valores do sucessor para o nó atual
+            raiz->chave = temp->chave;
+            raiz->contador = temp->contador;
+
+            // Remove o sucessor da subárvore direita
+            raiz->dir = removerTodasOcorrencias(raiz->dir, temp->chave);
+        }
+    }
+    return raiz; //importante para retornar a raiz em caso de não encontrar o valor nas recursivas
 }
 
 //------------------------------------------------------------------------------
