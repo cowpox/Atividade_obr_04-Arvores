@@ -1,0 +1,49 @@
+01) Plano de implementação das funções: das mais básicas para as mais avançadas
+    Buscar (buscar)
+    Inserir (inserir)
+    Remover uma ocorrência (removerUmaOcorrencia)
+    Remover todas as ocorrências (removerTodasOcorrencias)
+    Percursos (exibirInOrder)
+    Contar nós (contarNos)
+    Contar total de elementos (contarTotalElementos)
+    k-ésimo menor (kEsimoMenor)
+    Imprimir intervalo (imprimirIntervalo)
+    LCA (lowestCommonAncestor)
+
+02) Função buscar:
+    retorna: o nó do valor ou NULL (caso não exista)
+    lógica: vamos utilizar a recursiva
+        raiz == NULL, retorna NULL
+        valor == raiz->chave, retorna raiz
+        valor < raiz->chave, busca sub-árvore esquerda
+        valor > raiz->chave, busca sub-árvore direita
+    teste: erro (não localizou o 5)
+
+03) Função inserir:
+    retorna: ponteiro de nó
+    lógica: recursiva
+        raiz == NULL, cria novo nó e retorna
+        senão:
+            valor < raiz->chave, insira na subárvore esquerda
+            valor > raiz->chave, insira na subárvore direita
+            valor == raiz->chave, incrementa contador e não cria nono nó
+        retorna a nova raiz (importante para recursão)
+    teste: ainda sem conseguir avaliar
+
+04) Revisar a função inicializar
+    recebe: ponteiro de ponteiro
+    retorna: void
+    lógica: permite modificar a variável raiz diretamente no main
+        define a raiz como NULL (árvore vazia)
+    teste: realizado com sucesso (OK)
+
+05) Revisar a função criarNo
+    recebe: valor
+    retorna: ponteiro para o novo nó
+    lógica: 
+        aloca memória para novo nó
+        preenche: chave (com valor), contador com 1, esq e dir com NULL
+    teste: realizado com sucesso (OK)
+
+06) Modificar a inserção de valores no main (atribuir a um ponteiro)
+falta fazer a revisão!!!

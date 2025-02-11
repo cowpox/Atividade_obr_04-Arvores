@@ -36,43 +36,68 @@ void imprimirIntervalo(PONT raiz, int min, int max);
 //------------------------------------------------------------------------------
 // 1) Inicializar
 void inicializar(PONT* raiz) {
+    // defina a raiz como NULL (árvore vazia)
     *raiz = NULL;
 }
 
 //------------------------------------------------------------------------------
 // 2) Criar nó
 PONT criarNo(int valor) {
+    // aloca memória para o novo nó
     PONT novo = (PONT) malloc(sizeof(NO));
     if(novo) {
+        // preenche os campos do novo nó
         novo->chave = valor;
         novo->contador = 1;
         novo->esq = NULL;
         novo->dir = NULL;
     }
+    // retorna ponteiro para o novo nó
     return novo;
 }
 
 //------------------------------------------------------------------------------
 // 3) Buscar
 PONT buscar(PONT raiz, int valor) {
-    // COMPLETAR
     // Retorna ponteiro para nó com chave == valor ou NULL se não existir.
-    // Usar a lógica de BST:
+    if (raiz == NULL || raiz->chave == valor) 
+        return raiz;
+    
+        // Usar a lógica de BST:
     //  - se valor < raiz->chave => buscar à esquerda
-    //  - se valor > raiz->chave => buscar à direita
-    //  - se valor == raiz->chave => retorna raiz
-    return NULL; // provisório
+    if (valor < raiz->chave)
+        return buscar(raiz->esq, valor);
+    
+        //  - se valor > raiz->chave => buscar à direita
+    return buscar(raiz->dir, valor);
+    
+
+    //  - se valor == raiz->chave => retorna raiz ???
+
+    return NULL;
 }
 
 //------------------------------------------------------------------------------
 // 4) Inserir
 PONT inserir(PONT raiz, int valor) {
-    // COMPLETAR
-    // Se raiz == NULL => cria nó
+    // Se raiz == NULL (árvore vazia) => cria nó e retorna
+    if (raiz == NULL) {
+        return criarNo(valor);
+    }
+    
     // Se valor < raiz->chave => raiz->esq = inserir(raiz->esq, valor)
+    if (valor < raiz->chave) {
+        raiz->esq = inserir(raiz->esq, valor);  // Insere na esquerda
     // Se valor > raiz->chave => raiz->dir = inserir(raiz->dir, valor)
+    } else if (valor > raiz->chave) {
+        raiz->dir = inserir(raiz->dir, valor);  // Insere na direita
     // Se valor == raiz->chave => incrementa raiz->contador
-    return raiz; // provisório
+    } else {
+        raiz->contador++;  // Se já existe, incrementa o contador
+    }
+    
+    // retorna a nova raiz (importante para recursão)
+    return raiz;
 }
 
 //------------------------------------------------------------------------------
@@ -147,9 +172,7 @@ PONT lowestCommonAncestor(PONT raiz, int val1, int val2) {
 //------------------------------------------------------------------------------
 // main() para testes com expectativas de resultado
 int main() {
-    // PONT raiz;                    // ponteiro para a raiz da BST
-    // inicializar(&raiz);           // deixa a árvore vazia
-    // 
+    //
     // As funções a serem implementadas:
     //   - criarNo
     //   - inserir
@@ -163,8 +186,28 @@ int main() {
     //   - imprimirIntervalo
     //   - lowestCommonAncestor
 
+    // PONT raiz;                    // ponteiro para a raiz da BST
+    // inicializar(&raiz);           // deixa a árvore vazia
     PONT raiz;
     inicializar(&raiz);
+    
+    // testa inicialização da árvore (Adriano)
+    if (raiz == NULL)
+        printf("Árvore inicializada corretamente!\n");
+    else
+        printf("Erro na inicialização!\n");
+
+
+    // testa função criar nó (Adriano)
+    PONT no = criarNo(42);
+
+    if (no != NULL) {
+        printf("Nó criado com chave = %d, contador = %d\n", no->chave, no->contador);
+    } else {
+        printf("Erro ao criar nó.\n");
+    }
+
+    free(no);  // Evita vazamento de memória
 
     // -------------------------------------------------------
     // 1) Inserção com valores repetidos
@@ -177,13 +220,26 @@ int main() {
     // InOrder final esperado (antes de quaisquer remoções):
     //     "5 5 5 10 10 15 18"
     //
-    inserir(raiz, 10); 
-    inserir(raiz, 5);
-    inserir(raiz, 15);
-    inserir(raiz, 10); // repetido => contador(10)++
-    inserir(raiz, 5);  // repetido => contador(5)++
-    inserir(raiz, 5);  // repetido => contador(5)++
-    inserir(raiz, 18);
+
+    // não estava atualizando o nó raiz
+    // inserir(raiz, 10); 
+    // inserir(raiz, 5);
+    // inserir(raiz, 15);
+    // inserir(raiz, 10); // repetido => contador(10)++
+    // inserir(raiz, 5);  // repetido => contador(5)++
+    // inserir(raiz, 5);  // repetido => contador(5)++
+    // inserir(raiz, 18);
+
+    raiz = inserir(raiz, 10);
+    raiz = inserir(raiz, 5);
+    raiz = inserir(raiz, 15);
+    raiz = inserir(raiz, 10); // repetido => contador(10)++
+    raiz = inserir(raiz, 5);  // repetido => contador(5)++
+    raiz = inserir(raiz, 5);  // repetido => contador(5)++
+    raiz = inserir(raiz, 18);
+
+
+
 
     printf("\n--- APÓS INSERIR (10,5,15,10,5,5,18) ---\n");
     printf("InOrder esperado: 5 5 5 10 10 15 18\n");
