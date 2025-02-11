@@ -47,3 +47,26 @@
 
 06) Modificar a inserção de valores no main (atribuir a um ponteiro)
 falta fazer a revisão!!!
+
+07) Função removerUmaOcorrencia
+    recebe: ponteiro para raiz e o valor a ser removido
+    retorna: ponteiro da raiz (pois pode ser diferente)
+    lógica: remove apenas 1 cópia do valor
+        busca o nó que contenha o valor (durante o percurso da excludência)
+        se não encontrado, não faz nada (retorna a raiz)
+        se encontrado e contador maior que 1 => só decrementa o contador em 1
+        se encontrado e contador == 1 => faz a remoção tradicional
+    obs: não há necessidade de usar a função buscar, para não percorrer a árvore 2 x
+    teste: ainda não realizado
+
+08) Implementar a função exibirInOrder (para poder testar as funções de remoção)
+    recebe: ponteiro para a raiz
+    exibe: os elementos da árvore em ordem crescente
+    retorna: void
+    lógica: recursiva
+        visita subárvore esquerda
+        imprime nó
+        visita subárvore direita
+    teste: exibiu em ordem crescente. Funcionando (OK)
+
+09) Realizar testes com as funções já implementadas
