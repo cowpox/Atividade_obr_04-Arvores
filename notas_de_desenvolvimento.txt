@@ -127,6 +127,18 @@ Revisado => ok
         se não => imprime raiz->chave contador vezes e chamada esq e dir
     teste: funcionando (OK)
 
+15) Função lowestCommonAncestor
+    recebe: ponteiro de raiz e dois inteiros (chaves)
+    retorna: ponteiro para o menor nó ancestral comum
+    lógica: recursiva
+        se raiz == NULL, retorna NULL
+        se os valores forem menores que a raiz, o LCA está na esquerda
+        se os valores forem maiores que a raiz, o LCA está na direita
+        caso contrário, raiz é o LCA (desde que os valores existam)
+    teste: diferente do esperado (entretanto a estrutura da árvore não corresponde
+            ao que está no comentário: o elemento 16 deveria ser filho do 18, não do 12)
+
+            
 opcionais:
 void exibirPreOrder: raiz, esquerda, direita
 void exibirPostOrder: esquerda, direita, raiz

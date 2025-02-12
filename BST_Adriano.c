@@ -281,9 +281,25 @@ void imprimirIntervalo(PONT raiz, int min, int max) {
 //------------------------------------------------------------------------------
 
 PONT lowestCommonAncestor(PONT raiz, int val1, int val2) {
-    // COMPLETAR
-    return NULL;
+    if (raiz == NULL)
+        return NULL; // Caso base: árvore vazia ou não encontrou os valores
+
+    // Se um dos valores for igual à raiz, a raiz já é o LCA
+    if (raiz->chave == val1 || raiz->chave == val2) return raiz;
+
+    // Se ambos os valores são menores que a raiz, o LCA está na esquerda
+    if (val1 < raiz->chave && val2 < raiz->chave)
+        return lowestCommonAncestor(raiz->esq, val1, val2);
+
+    // Se ambos os valores são maiores que a raiz, o LCA está na direita
+    if (val1 > raiz->chave && val2 > raiz->chave)
+        return lowestCommonAncestor(raiz->dir, val1, val2);
+
+    // Se os valores estão em lados diferentes ou um deles é a raiz, encontramos o LCA
+    return raiz;
 }
+
+
 
 
 //------------------------------------------------------------------------------
@@ -480,6 +496,7 @@ int main() {
     PONT nLCA;
 
     nLCA = lowestCommonAncestor(raiz, 3, 5);
+
     if(nLCA) {
         printf("\nLCA(3,5) => chave=%d (esperado=5)\n", nLCA->chave);
     }
