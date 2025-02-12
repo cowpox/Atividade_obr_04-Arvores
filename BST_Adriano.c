@@ -204,34 +204,78 @@ void exibirInOrder(PONT raiz) {
 //------------------------------------------------------------------------------
 // 8) Contar nós distintos
 int contarNos(PONT raiz) {
-    // COMPLETAR
     // Se raiz==NULL => 0
-    // Senao => 1 + contarNos(esq) + contarNos(dir)
-    return 0; // provisório
+    if (raiz == NULL)
+        return 0; // Se a árvore estiver vazia, não há nós distintos
+
+    return 1 + contarNos(raiz->esq) + contarNos(raiz->dir);
 }
 
 //------------------------------------------------------------------------------
 // 9) Contar total de elementos (somando contadores)
 int contarTotalElementos(PONT raiz) {
-    // COMPLETAR
-    // soma = raiz->contador + subárvores
-    return 0; // provisório
+    // Se raiz==NULL => 0
+    if (raiz == NULL)
+        return 0; // Se a árvore estiver vazia, não há elementos
+
+    return raiz->contador + contarTotalElementos(raiz->esq) + contarTotalElementos(raiz->dir);
 }
 
 //------------------------------------------------------------------------------
 // 10) k-ésimo menor
+int kEsimoMenorAux(PONT raiz, int k, int *contador) {
+    if (raiz == NULL)
+        return -1; // Se a árvore estiver vazia ou k for inválido
+
+    // Primeiro, busca na subárvore esquerda
+    int resultado = kEsimoMenorAux(raiz->esq, k, contador);
+    if (resultado != -1) 
+        return resultado; // Se encontrou na esquerda, retorna
+
+    // Contabiliza o nó atual considerando sua frequência
+    *contador += raiz->contador;
+
+    // Se o k-ésimo menor está dentro do contador atual, encontramos o valor
+    if (*contador >= k)
+        return raiz->chave;
+
+    // Se ainda não foi encontrado, busca na subárvore direita
+    return kEsimoMenorAux(raiz->dir, k, contador);
+}
+
+
 int kEsimoMenor(PONT raiz, int k) {
-    // COMPLETAR
-    // Deve considerar o contador de cada nó
-    // Retorne -1 se não existir
-    return -1; // provisório
+    int contador = 0;
+    // utilizar uma função auxiliar (kEsimoMenorAux)
+    return kEsimoMenorAux(raiz, k, &contador);
 }
 
 //------------------------------------------------------------------------------
 // 11) Imprimir Intervalo [min, max]
 void imprimirIntervalo(PONT raiz, int min, int max) {
-    // COMPLETAR
-    // Imprimir todos (com contadores) que estejam no intervalo [min, max]
+    if (raiz == NULL)
+        return; // Caso base: árvore vazia
+
+    // Se a chave atual for menor que min, ignora a subárvore esquerda e busca apenas na direita
+    if (raiz->chave < min) {
+        imprimirIntervalo(raiz->dir, min, max);
+        return; // Importante para evitar verificações desnecessárias
+    }
+
+    // Se a chave atual for maior que max, ignora a subárvore direita e busca apenas na esquerda
+    if (raiz->chave > max) {
+        imprimirIntervalo(raiz->esq, min, max);
+        return; // Importante para evitar verificações desnecessárias
+    }
+
+    // Se a chave atual está dentro do intervalo, imprime o valor 'contador' vezes
+    for (int i = 0; i < raiz->contador; i++) {
+        printf("%d ", raiz->chave);
+    }
+
+    // Chama recursivamente para a subárvore esquerda e direita
+    imprimirIntervalo(raiz->esq, min, max);
+    imprimirIntervalo(raiz->dir, min, max);
 }
 
 //------------------------------------------------------------------------------

@@ -89,4 +89,48 @@ Revisado => ok
         se encontrado => faz a remoção tradicional
     teste: funcionando (OK)
 
+11) Função contarNos
+    recebe: ponteiro para a raiz
+    retorna: inteiro com o número de nós
+    lógica: retorna o número de nós distintos
+        se raiz == NULL, retorna 0
+        se não: 1 + contarNos Esq + contarNos dir
+    teste: funcionando (OK)    
+
+12) Função contarTotalElementos
+    recebe: ponteiro para raiz
+    retorna: inteiro com a soma dos contadores de cada nó
+    lógica: retorna soma de ocorrência dos nós
+        se raiz == NULL, retorna 0
+        se não, raiz->contador + contarTotal esq + contarTotal dir
+    teste: funcionando (OK)
+
+13) Função kEsimoMenor
+    recebe: ponteiro para raiz e inteiro k
+    retorna: inteiro com a chave do k-ésimo menor elemento (incluindo frequencias)
+    lógica: utilizar uma função auxiliar (kEsimoMenorAux)
+        Percorremos a árvore in-order, mantendo uma variável passada por referência para contar os elementos.
+        Se k for menor que o número de elementos na subárvore esquerda, chamamos a recursão na esquerda.
+        Se k cair dentro do contador do nó atual, esse nó é o k-ésimo menor.
+        Se k ainda não foi atingido, subtraímos os elementos contados e chamamos a recursão na direita.
+        Se k for maior que o total de elementos da árvore, retornamos -1 (valor não encontrado).
+    teste: funcionando (OK)
+
+14) Função imprimirIntervalo
+    recebe: ponteiro para raiz, inteiro mínimo e inteiro máximo
+    retorna: void
+    exibe: todas as chaves [min, max], considerando cada cópia
+    lógica:
+        se raiz == NULL, não faz nada
+        se raiz->chave < min, só busca à direita
+        se raiz->chave > max, só busca à esquerda
+        se não => imprime raiz->chave contador vezes e chamada esq e dir
+    teste: funcionando (OK)
+
+opcionais:
+void exibirPreOrder: raiz, esquerda, direita
+void exibirPostOrder: esquerda, direita, raiz
+
+
+
 
