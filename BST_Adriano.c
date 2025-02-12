@@ -299,7 +299,30 @@ PONT lowestCommonAncestor(PONT raiz, int val1, int val2) {
     return raiz;
 }
 
+//------------------------------------------------------------------------------
+// FUNÇÕES OPCIONAIS (EXTRAS)
+//------------------------------------------------------------------------------
 
+// 1 - Função exibirArvore: permite a visualização da árvore no formato:
+// raiz - subárvore esquerda - subárvore direita
+void exibirArvore(PONT raiz) {
+    if (raiz == NULL) {
+        printf("NULL");
+        return;
+    }
+    
+    // Imprime a chave do nó
+    printf("%i", raiz->chave);
+    
+    // Se houver pelo menos um filho, imprime as subárvores entre parênteses
+    if (raiz->esq != NULL || raiz->dir != NULL) {
+        printf("(");
+        exibirArvore(raiz->esq);
+        printf(", ");
+        exibirArvore(raiz->dir);
+        printf(")");
+    }
+}
 
 
 //------------------------------------------------------------------------------
@@ -379,6 +402,8 @@ int main() {
     printf("InOrder obtido:   ");
     exibirInOrder(raiz); 
     printf("\n");
+
+    exibirArvore(raiz);
 
     // -------------------------------------------------------
     // 2) Busca por valores
@@ -470,6 +495,16 @@ int main() {
     //              12(1) 18(1)
     //                  \
     //                  16(1)
+
+    //    Correção da nova BST (alocação correta do 16):
+    //       5 (cont=2)
+    //           /    \
+    //         3(1)   15(1)
+    //                /  \
+    //              12(1) 18(1)
+    //                   /
+    //                  16(1)  
+
     inserir(raiz, 12);
     inserir(raiz, 16);
     inserir(raiz, 3);
@@ -479,6 +514,7 @@ int main() {
     printf("Obtido:          ");
     exibirInOrder(raiz);
     printf("\n");
+    exibirArvore(raiz);
 
     // LCA tests:
     //  LCA(3,5) -> 5 ou 3? 
@@ -508,7 +544,7 @@ int main() {
 
     nLCA = lowestCommonAncestor(raiz, 16, 18);
     if(nLCA) {
-        printf("LCA(16,18) => chave=%d (esperado=15)\n", nLCA->chave);
+        printf("LCA(16,18) => chave=%d (esperado=18)\n", nLCA->chave);
     }
 
     nLCA = lowestCommonAncestor(raiz, 5, 18);

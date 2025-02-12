@@ -135,8 +135,22 @@ Revisado => ok
         se os valores forem menores que a raiz, o LCA está na esquerda
         se os valores forem maiores que a raiz, o LCA está na direita
         caso contrário, raiz é o LCA (desde que os valores existam)
-    teste: diferente do esperado (entretanto a estrutura da árvore não corresponde
+    teste:
+        1) LCA(16,18): diferente do esperado (entretanto a estrutura da árvore não corresponde
             ao que está no comentário: o elemento 16 deveria ser filho do 18, não do 12)
+        2) LCA(5,18): diferente do esperado. Deve estar ocorrendo mudança da árvore na remoção anterior.
+        vamos criar uma função para visualizar a árvore (exibirArvore)
+
+16) Função exibirArvore
+    recebe: ponteiro de raiz
+    exibe: mostra os elementos da árvore no formato raiz - subárvore esq - subárvore dir
+    retorna: void
+    lógica: recursiva
+        imprime a raiz
+        imprime "("
+        imprime arv esq
+        imprime arv dir
+        imprime ")"
 
             
 opcionais:
