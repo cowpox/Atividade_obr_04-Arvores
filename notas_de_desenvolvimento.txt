@@ -177,6 +177,13 @@ Revisado => ok
         imprimir cada chave múltiplas vezes (de acordo com o contador)
     teste: funcionando (OK)
 
+19) Realizados mais testes, sem intercorrências
+
+20) Implementado printPretty (em arquivo separado, pois não foi de minha autoria). Utilizei apenas para visualizar
+a estrutura da árvore e ajudar na depuração de erros.
+
+
+
 
 
 

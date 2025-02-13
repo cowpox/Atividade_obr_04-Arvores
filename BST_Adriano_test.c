@@ -8,11 +8,14 @@
   devem produzir a saída indicada.
 */
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "printPretty.h"
+
+
+
+
+#include <string.h>
+#include <math.h>
 
 // Estrutura do nó
 typedef struct no {
@@ -367,253 +370,230 @@ void exibirPostOrder(PONT raiz) {
 
 
 
+// 4 - Função printPrettyTree: imprimir no formato de diagrama
+//------------------------------------------------------------------------------
+// Função para calcular a altura da árvore
+int treeHeight(PONT root) {
+    if(root == NULL)
+        return 0;
+    int leftH = treeHeight(root->esq);
+    int rightH = treeHeight(root->dir);
+    return (leftH > rightH ? leftH : rightH) + 1;
+}
 
+// Função recursiva para preencher o buffer com os nós e as barras
+// Parâmetros:
+// - root: nó atual
+// - level: nível atual (começando em 0)
+// - left e right: limites (colunas) onde o nó deve ser posicionado
+// - buffer: matriz de caracteres para desenho
+void fillBuffer(PONT root, int level, int left, int right, char **buffer) {
+    if(root == NULL)
+        return;
+    
+    // Linha onde o valor do nó será impresso
+    int row = level * 2;
+    // Cálculo da coluna central entre left e right
+    int mid = (left + right) / 2;
+    
+    // Converte o valor do nó para string
+    char val[10];
+    sprintf(val, "%d", root->chave);
+    int len = (int)strlen(val);
+    // Posiciona o valor de forma centralizada
+    int start = mid - len / 2;
+    for (int i = 0; i < len; i++) {
+        if(start + i >= 0 && start + i < right + 1)
+            buffer[row][start + i] = val[i];
+    }
+    
+    // Se existir filho à esquerda, desenha a barra e preenche recursivamente
+    if(root->esq != NULL) {
+        buffer[row + 1][mid - 1] = '/';
+        fillBuffer(root->esq, level + 1, left, mid - 1, buffer);
+    }
+    
+    // Se existir filho à direita, desenha a barra e preenche recursivamente
+    if(root->dir != NULL) {
+        buffer[row + 1][mid + 1] = '\\';
+        fillBuffer(root->dir, level + 1, mid + 1, right, buffer);
+    }
+}
+
+// Função que organiza o buffer e imprime a árvore
+void printPrettyTree(PONT root) {
+    int h = treeHeight(root);
+    if(h == 0)
+        return;
+    // Define o número de linhas: 2 * h - 1 (uma linha para o nó, uma para a barra, exceto no último nível)
+    int rows = h * 2 - 1;
+    // Define a largura: usamos 2^h * 2 - 1 (pode ser ajustado conforme o tamanho dos números)
+    int width = ((1 << h) * 2) - 1;
+
+    // Aloca e inicializa o buffer com espaços
+    char** buffer = (char**)malloc(rows * sizeof(char*));
+    for (int i = 0; i < rows; i++) {
+        buffer[i] = (char*)malloc((width + 1) * sizeof(char));
+        for (int j = 0; j < width; j++) {
+            buffer[i][j] = ' ';
+        }
+        buffer[i][width] = '\0';
+    }
+
+    // Preenche o buffer a partir da raiz
+    fillBuffer(root, 0, 0, width - 1, buffer);
+    
+    // Imprime o buffer linha por linha
+    for(int i = 0; i < rows; i++){
+         // Remove espaços à direita (opcional)
+         int j = width - 1;
+         while(j >= 0 && buffer[i][j] == ' ') {
+             buffer[i][j] = '\0';
+             j--;
+         }
+         printf("%s\n", buffer[i]);
+         free(buffer[i]);
+    }
+    free(buffer);
+}
 //------------------------------------------------------------------------------
 
 
 //------------------------------------------------------------------------------
 // main() para testes com expectativas de resultado
 int main() {
-    //
-    // As funções a serem implementadas:
-    //   - criarNo
-    //   - inserir
-    //   - removerUmaOcorrencia
-    //   - removerTodasOcorrencias
-    //   - buscar
-    //   - exibirInOrder
-    //   - contarNos
-    //   - contarTotalElementos
-    //   - kEsimoMenor
-    //   - imprimirIntervalo
-    //   - lowestCommonAncestor
-
-    // PONT raiz;                    // ponteiro para a raiz da BST
-    // inicializar(&raiz);           // deixa a árvore vazia
     PONT raiz;
     inicializar(&raiz);
-    
-    // testa inicialização da árvore (Adriano)
+
+    // -------------------------------------------------------
+    // 1) Testa inicialização da árvore
+    printf("\n--- TESTE: Inicialização da árvore ---\n");
     if (raiz == NULL)
-        printf("Árvore inicializada corretamente!\n");
+        printf("Árvore inicializada corretamente! (esperado)\n");
     else
-        printf("Erro na inicialização!\n");
+        printf("Erro na inicialização! (inesperado)\n");
 
-
-    // testa função criar nó (Adriano)
+    // -------------------------------------------------------
+    // 2) Testa função criar nó
+    printf("\n--- TESTE: Criar nó ---\n");
     PONT no = criarNo(42);
-
     if (no != NULL) {
-        printf("Nó criado com chave = %d, contador = %d\n", no->chave, no->contador);
+        printf("Nó criado com chave = %d, contador = %d (esperado: chave=42, contador=1)\n", no->chave, no->contador);
     } else {
-        printf("Erro ao criar nó.\n");
+        printf("Erro ao criar nó. (inesperado)\n");
     }
-
     free(no);  // Evita vazamento de memória
 
     // -------------------------------------------------------
-    // 1) Inserção com valores repetidos
-    //    Esperado que:
-    //      - nó 10 tenha contador=2
-    //      - nó 5  tenha contador=3
-    //      - nó 15 tenha contador=1
-    //      - nó 18 tenha contador=1
-    //
-    // InOrder final esperado (antes de quaisquer remoções):
-    //     "5 5 5 10 10 15 18"
-    //
+    // 3) Inserção com valores repetidos
+    printf("\n--- TESTE: Inserção de 20 valores (com repetições) ---\n");
+    int valores[] = {10, 5, 15, 10, 5, 5, 18, 7, 12, 6, 8, 2, 25, 30, 1, 20, 12, 6, 40, 15};
+    int n = sizeof(valores) / sizeof(valores[0]);
 
-    // não estava atualizando o nó raiz
-    // inserir(raiz, 10); 
-    // inserir(raiz, 5);
-    // inserir(raiz, 15);
-    // inserir(raiz, 10); // repetido => contador(10)++
-    // inserir(raiz, 5);  // repetido => contador(5)++
-    // inserir(raiz, 5);  // repetido => contador(5)++
-    // inserir(raiz, 18);
+    for (int i = 0; i < n; i++) {
+        raiz = inserir(raiz, valores[i]);
+    }
 
-    raiz = inserir(raiz, 10);
-    raiz = inserir(raiz, 5);
-    raiz = inserir(raiz, 15);
-    raiz = inserir(raiz, 10); // repetido => contador(10)++
-    raiz = inserir(raiz, 5);  // repetido => contador(5)++
-    raiz = inserir(raiz, 5);  // repetido => contador(5)++
-    raiz = inserir(raiz, 18);
-
-
-
-
-    printf("\n--- APÓS INSERIR (10,5,15,10,5,5,18) ---\n");
-    printf("InOrder esperado: 5 5 5 10 10 15 18\n");
-    printf("InOrder obtido:   ");
-    exibirInOrder(raiz); 
+    printf("InOrder após inserção:\n");
+    printf("Esperado: 1 2 5 5 5 6 6 7 8 10 10 12 12 15 15 18 20 25 30 40\n");
+    printf("Obtido:   ");
+    exibirInOrder(raiz);
     printf("\n");
 
     exibirArvore(raiz);
 
     // -------------------------------------------------------
-    // 2) Busca por valores
-    PONT node5 = buscar(raiz, 5);
-    if(node5) {
-        printf("\nBuscar(5): encontrado com contador=%d (esperado=3)\n", node5->contador);
-    } else {
-        printf("\nBuscar(5): não encontrado (inesperado)\n");
-    }
-
-    PONT nodeX = buscar(raiz, 999); // valor não existente
-    if(!nodeX) {
-        printf("Buscar(999): não encontrado (esperado)\n");
-    } else {
-        printf("Buscar(999): encontrado??? (inesperado)\n");
+    // 4) Teste de busca
+    printf("\n--- TESTE: Busca por elementos existentes e inexistentes ---\n");
+    int buscarValores[] = {10, 5, 25, 40, 100}; // 100 não existe
+    int esperados[] = {2, 3, 1, 1, -1}; // Contadores esperados
+    for (int i = 0; i < 5; i++) {
+        PONT resultado = buscar(raiz, buscarValores[i]);
+        if (resultado)
+            printf("Busca(%d) encontrado, contador = %d (esperado: %d)\n", buscarValores[i], resultado->contador, esperados[i]);
+        else
+            printf("Busca(%d) não encontrado. (esperado)\n", buscarValores[i]);
     }
 
     // -------------------------------------------------------
-    // 3) Remover UMA ocorrência 
-    //    removerUmaOcorrencia(5) => contador(5) deve passar de 3 para 2
-    removerUmaOcorrencia(raiz, 5);
-
-    printf("\n--- APÓS removerUmaOcorrencia(5) ---\n");
-    printf("Esperado InOrder: 5 5 10 10 15 18\n");
-    printf("InOrder obtido:   ");
-    exibirInOrder(raiz);
-    printf("\n");
-
-    node5 = buscar(raiz, 5);
-    if(node5) {
-        printf("Agora contador(5)=%d (esperado=2)\n", node5->contador);
-    }
-
-    // -------------------------------------------------------
-    // 4) Remover TODAS ocorrências
-    //    removerTodasOcorrencias(10) => remove nó com chave=10 por completo
-    removerTodasOcorrencias(raiz, 10);
-
-    printf("\n--- APÓS removerTodasOcorrencias(10) ---\n");
-    printf("Esperado InOrder: 5 5 15 18\n");
-    printf("InOrder obtido:   ");
+    // 5) Teste de remoção de UMA ocorrência
+    printf("\n--- TESTE: Remoção de UMA ocorrência ---\n");
+    printf("Removendo uma ocorrência do valor 5...\n");
+    raiz = removerUmaOcorrencia(raiz, 5);
+    printf("InOrder após remover uma ocorrência de 5:\n");
+    printf("Esperado: 1 2 5 5 6 6 7 8 10 10 12 12 15 15 18 20 25 30 40\n");
+    printf("Obtido:   ");
     exibirInOrder(raiz);
     printf("\n");
 
     // -------------------------------------------------------
-    // 5) Contagem de nós e total de elementos
-    //    Árvores resultante: {5(cont=2), 15(cont=1), 18(cont=1)}
-    //      => contarNos=3   (chaves distintas: 5,15,18)
-    //      => contarTotalElementos=4   (5,5,15,18)
+    // 6) Teste de remoção de TODAS as ocorrências
+    printf("\n--- TESTE: Remoção de TODAS as ocorrências ---\n");
+    printf("Removendo todas as ocorrências do valor 10...\n");
+    raiz = removerTodasOcorrencias(raiz, 10);
+    printf("InOrder após remover todas as ocorrências de 10:\n");
+    printf("Esperado: 1 2 5 5 6 6 7 8 12 12 15 15 18 20 25 30 40\n");
+    printf("Obtido:   ");
+    exibirInOrder(raiz);
+    printf("\n");
+
+    // -------------------------------------------------------
+    // 7) Teste de contagem de nós distintos e total de elementos
+    printf("\n--- TESTE: Contagem de nós distintos e total de elementos ---\n");
     int qtdNos = contarNos(raiz);
     int totalElem = contarTotalElementos(raiz);
-    printf("\ncontarNos => %d (esperado=3)\n", qtdNos);
-    printf("contarTotalElementos => %d (esperado=4)\n", totalElem);
+    printf("Total de nós distintos = %d (esperado: 13)\n", qtdNos);
+    printf("Total de elementos = %d (esperado: 17)\n", totalElem);
 
     // -------------------------------------------------------
-    // 6) k-ésimo menor (considerando contadores)
-    //    InOrder real: [5,5,15,18]
-    //       k=1 => 5
-    //       k=2 => 5
-    //       k=3 => 15
-    //       k=4 => 18
-    //       k=5 => -1 (não existe)
-    printf("\n--- Teste k-ésimo menor ---\n");
-    printf("k=1 => %d (esperado=5)\n", kEsimoMenor(raiz,1));
-    printf("k=2 => %d (esperado=5)\n", kEsimoMenor(raiz,2));
-    printf("k=3 => %d (esperado=15)\n", kEsimoMenor(raiz,3));
-    printf("k=4 => %d (esperado=18)\n", kEsimoMenor(raiz,4));
-    printf("k=5 => %d (esperado=-1)\n", kEsimoMenor(raiz,5));
-
-    // -------------------------------------------------------
-    // 7) imprimirIntervalo [6..18]
-    //    InOrder da árvore: 5,5,15,18
-    //    Filtrando [6..18], esperamos: 15 18
-    printf("\n--- Teste imprimirIntervalo [6..18] ---\n");
-    printf("Esperado: 15 18\nObtido:   ");
-    imprimirIntervalo(raiz, 6, 18);
+    // 8) Teste de k-ésimo menor elemento
+    printf("\n--- TESTE: k-ésimo menor elemento ---\n");
+    printf("Esperado: 1 2 5 5 6 6 7 8 12 12\n");
+    printf("Obtido:   ");
+    for (int k = 1; k <= 10; k++) {
+        int resultado = kEsimoMenor(raiz, k);
+        printf("%d ", resultado);
+    }
     printf("\n");
 
     // -------------------------------------------------------
-    // 8) Testar LCA (lowestCommonAncestor) - não é opcional
-    //    Vamos inserir mais alguns valores para teste de LCA
-    //    Situação final da árvore atual: 5(cont=2),15(cont=1),18(cont=1)
-    //    Inserir(12), Inserir(16), Inserir(3)
-    //    Nova BST (com contadores):
-    //       5 (cont=2)
-    //           /    \
-    //         3(1)   15(1)
-    //                /  \
-    //              12(1) 18(1)
-    //                  \
-    //                  16(1)
-
-    //    Correção da nova BST (alocação correta do 16):
-    //       5 (cont=2)
-    //           /    \
-    //         3(1)   15(1)
-    //                /  \
-    //              12(1) 18(1)
-    //                   /
-    //                  16(1)  
-
-    inserir(raiz, 12);
-    inserir(raiz, 16);
-    inserir(raiz, 3);
-
-    printf("\n--- Árvore após inserir(12,16,3) ---\n");
-    printf("InOrder esperado: 3 5 5 12 15 16 18\n");
-    printf("Obtido:          ");
-    exibirInOrder(raiz);
+    // 9) Teste de impressão de intervalo [5, 20]
+    printf("\n--- TESTE: Impressão de intervalo [5, 20] ---\n");
+    printf("Esperado: 5 5 6 6 7 8 12 12 15 15 18 20\n");
+    printf("Obtido:   ");
+    imprimirIntervalo(raiz, 5, 20);
     printf("\n");
-    exibirArvore(raiz);
-    printf("\n");
+
+    // -------------------------------------------------------
+    // 10) Teste de Lowest Common Ancestor (LCA)
+    printf("\n--- TESTE: Lowest Common Ancestor (LCA) ---\n");
+    int lcaTestes[][2] = {{6, 8}, {2, 12}, {20, 40}, {1, 30}, {12, 25}};
+    int esperadosLCA[] = {7, 5, 25, 10, 15};
+    for (int i = 0; i < 5; i++) {
+        PONT lca = lowestCommonAncestor(raiz, lcaTestes[i][0], lcaTestes[i][1]);
+        printf("LCA(%d, %d) = %d (esperado: %d)\n", lcaTestes[i][0], lcaTestes[i][1], lca ? lca->chave : -1, esperadosLCA[i]);
+    }
+
+    // -------------------------------------------------------
+    // 11) Teste de exibição da árvore em diferentes ordens
+    printf("\n--- TESTE: Percursos da árvore ---\n");
+    printf("PreOrder (esperado): 12 5 2 1 7 6 6 8 15 18 25 20 30 40\n");
+    printf("Obtido:   ");
     exibirPreOrder(raiz);
     printf("\n");
+
+    printf("PostOrder (esperado): 1 2 6 6 8 7 5 18 25 20 30 40 15 12 12\n");
+    printf("Obtido:   ");
     exibirPostOrder(raiz);
     printf("\n");
+
+    // -------------------------------------------------------
+    // 12) Teste de exibição gráfica da árvore
+    printf("\n--- TESTE: Exibição gráfica da árvore ---\n");
     printPrettyTree(raiz);
-
-    // LCA tests:
-    //  LCA(3,5) -> 5 ou 3? 
-    //     - 3 e 5 estão ambos na subárvore da raiz=5? 
-    //     - Se a raiz é 5, e 3<5 => esq 
-    //       => LCA(3,5) deve ser 5, mas depende da estrutura exata
-    //  LCA(3,12) -> 5
-    //  LCA(16,18) -> 16 ou 15? 
-    //     => Analisando: 16 < 18 => 16 deve estar na subárvore direita(15)
-    //        -> 15 < 16 => goes right => 18
-    //        => 16 < 18 => subárvore esquerda de 18
-    //        => LCA deve ser 15 ou 18? Precisamos verificar a implementação.
-    //  LCA(5,18) -> 5 (pois 5 é raiz, e 18 está à direita)
-
-    // correção do valor esperado em LCA
-    // LCA(5,18) -> 15, pois 15 é raiz, 5 à esq e 18 à dir
-
-    PONT nLCA;
-
-    nLCA = lowestCommonAncestor(raiz, 3, 5);
-
-    if(nLCA) {
-        printf("\nLCA(3,5) => chave=%d (esperado=5)\n", nLCA->chave);
-    }
-
-    nLCA = lowestCommonAncestor(raiz, 3, 12);
-    if(nLCA) {
-        printf("LCA(3,12) => chave=%d (esperado=5)\n", nLCA->chave);
-    }
-
-    nLCA = lowestCommonAncestor(raiz, 16, 18);
-    if(nLCA) {
-        printf("LCA(16,18) => chave=%d (esperado=18)\n", nLCA->chave);
-    }
-
-    nLCA = lowestCommonAncestor(raiz, 5, 18);
-    if(nLCA) {
-        printf("LCA(5,18) => chave=%d (esperado=15)\n", nLCA->chave);
-    }
-
-    // Por fim, buscar um LCA com valor inexistente
-    nLCA = lowestCommonAncestor(raiz, 100, 3);
-    if(!nLCA) {
-        printf("LCA(100,3) => NULL (esperado=chave nao existe)\n");
-    }
 
     printf("\n--- FIM DOS TESTES ---\n");
 
     return 0;
 }
+
