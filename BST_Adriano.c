@@ -12,7 +12,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "printPretty.h"
 
 // Estrutura do nó
 typedef struct no {
@@ -562,11 +561,12 @@ int main() {
     printf("\n");
     exibirArvore(raiz);
     printf("\n");
+    printf("PreOrder\n");
     exibirPreOrder(raiz);
     printf("\n");
+    printf("PostOrder\n");
     exibirPostOrder(raiz);
     printf("\n");
-    printPrettyTree(raiz);
 
     // LCA tests:
     //  LCA(3,5) -> 5 ou 3? 
