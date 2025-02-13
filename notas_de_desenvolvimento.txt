@@ -140,6 +140,7 @@ Revisado => ok
             ao que está no comentário: o elemento 16 deveria ser filho do 18, não do 12)
         2) LCA(5,18): diferente do esperado. Deve estar ocorrendo mudança da árvore na remoção anterior.
         vamos criar uma função para visualizar a árvore (exibirArvore)
+        3) após visualizar a estrutura da árvore => refeito o esperado => funcionando (OK)
 
 16) Função exibirArvore
     recebe: ponteiro de raiz
@@ -151,11 +152,32 @@ Revisado => ok
         imprime arv esq
         imprime arv dir
         imprime ")"
+    teste: funcionando (OK)
+    refeitos testes da LCA (meus resultados estavam corretos)
 
-            
-opcionais:
-void exibirPreOrder: raiz, esquerda, direita
-void exibirPostOrder: esquerda, direita, raiz
+17) Função exibirPreOrder:
+    recebe: ponteiro de raiz
+    exibe: imprime os elementos em pré-ordem (raiz -> esq -> dir)
+    retorna: void
+    lógica: recursiva
+        imprime o nó atual
+        visita subárvore esq
+        visita subárvore dir
+        imprimir cada chave múltiplas vezes (de acordo com o contador)
+    teste: funcionando (OK)
+
+18) Função exibirPostOrder:
+    recebe: ponteiro de raiz
+    exibe: imprime os elementos em pós-ordem (esq -> dir -> raiz)
+    retorna: void
+    lógica: recursiva
+        visita subárvore esq
+        visita subárvore dir
+        visita o nó atual e imprime
+        imprimir cada chave múltiplas vezes (de acordo com o contador)
+    teste: funcionando (OK)
+
+
 
 
 
