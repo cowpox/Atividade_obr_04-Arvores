@@ -182,6 +182,15 @@ Revisado => ok
 20) Implementado printPretty (em arquivo separado, pois não foi de minha autoria). Utilizei apenas para visualizar
 a estrutura da árvore e ajudar na depuração de erros.
 
+21) Implementar função para liberar memória, desalocando cada nó
+    recebe: ponteira de raiz
+    retorna: void
+    logida: recursiva
+        libera árvore da esquerda
+        libera árvore da direita
+        libera o nó atual
+        
+
 
 
 
