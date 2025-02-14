@@ -1,0 +1,8 @@
+# Ignorar a pasta de configurações do VS Code
+.vscode/
+
+# Ignorar a pasta de testes
+test/
+
+# Ignorar todos os arquivos executáveis gerados
+*.exe
